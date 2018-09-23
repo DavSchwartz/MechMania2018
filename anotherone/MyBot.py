@@ -60,7 +60,7 @@ for line in fileinput.input():
     if game.get_turn_num() == 1:
         chosen_stance = "Rock"
 
-    #gets the player and makes it so that they stand still
+    #gets the player
     me = game.get_self()
     
     # reset boolean for retreat if health is gained
@@ -72,10 +72,10 @@ for line in fileinput.input():
         enough_health = False
     # if destination was reached
     elif me.destination == me.location:
-        #continue retreat
+        # continue retreat
         if me.health < 35:
             destination_node = game.shortest_paths(me.location, 0)[0][0]
-        #motion
+        # "flux capacitor" motion
         else:
             if me.location == 0:
                 destination_node = movement_map[str(counter)]
@@ -85,7 +85,7 @@ for line in fileinput.input():
     else:
         destination_node = me.destination
 
-    #finds the opponent and gets their stance
+    #finds the opponent
     opponent = game.get_opponent()
 
     # add prediction data based off last stances and current opponent stance
@@ -127,14 +127,15 @@ for line in fileinput.input():
         for x in game.nearest_monsters(me.location, 1):
             # if monster is on player's same tile, fight it
             if x.location == me.location:
-                # stay at 15 if monster is not killed
-                if me.movement_counter == 1 and me.location == 15:
+                # if monster is not killed, stay here
+                if me.movement_counter == 1:
                     destination_node = me.location
                 chosen_stance = get_winning_stance(game.get_monster(me.location).stance)
             # get ready to fight if monster is on destination node
             elif x.location == destination_node and me.movement_counter == 0:
                 chosen_stance = get_winning_stance(game.get_monster(destination_node).stance)
 
+    # set data for next turns prediction data entry
     last_me_before = me.stance
     last_them_before = opponent.stance
 
